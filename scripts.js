@@ -38,6 +38,7 @@ JavaScript
 */
 
 let inputTexto = document.querySelector(".input-texto")
+let traducao = document.querySelector(".traducao")
 
 
 async function traduzir(){
@@ -49,6 +50,8 @@ async function traduzir(){
     let resposta = await fetch(endereco)
 
     let dados = await resposta.json()
+
+    traducao.innerHTML = dados.responseData.translatedText
     
     console.log(dados)
 

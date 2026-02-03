@@ -18,10 +18,10 @@ JavaScript
     console.log() mostra o que eu quiser na tela
 
     [x] Saber quando o botão foi clicado
-    [ ] Pegar o texto que o usário digitou
-    [ ] Mando para o servidor traduzir
-    [ ] Receber a resposta do servidor (traducao)  
-    [ ] Colocar o texto na tela   
+    [x] Pegar o texto que o usário digitou
+    [x] Mando para o servidor traduzir
+    [x] Receber a resposta do servidor (traducao)  
+    [x] Colocar o texto na tela   
 
     // JavaScript - scripts
     // HTML - document
@@ -37,24 +37,45 @@ JavaScript
    json (formato mais amigavel)
 */
 
-let inputTexto = document.querySelector(".input-texto")
-let traducao = document.querySelector(".traducao")
+let inputTexto = document.querySelector(".input-texto");
+let traducaoTexto = document.querySelector(".traducao");
+let idioma = document.querySelector(".idioma");
 
+async function traduzir() {
 
-async function traduzir(){
+  let endereco ="https://api.mymemory.translated.net/get?q=" 
+    + inputTexto.value 
+    + "&langpair=pt-BR|" 
+    + idioma.value;
 
-    let endereco = "https://api.mymemory.translated.net/get?q=" 
-    + inputTexto.value
-    + "&langpair=pt-BR|en"
+  let resposta = await fetch(endereco);
 
-    let resposta = await fetch(endereco)
+  let dados = await resposta.json();
 
-    let dados = await resposta.json()
+  traducaoTexto.textContent = dados.responseData.translatedText
+}
 
-    traducao.innerHTML = dados.responseData.translatedText
-    
-    console.log(dados)
+function ouvirVoz() {
+  //ferramenta de reconhecimento de voz
+  let voz = window.webkitSpeechRecognition
 
+  // Deixando ela pronta para uso
+  let reconhecimentoVoz = new voz();
+
+  // Definindo o idioma do reconhecimento de voz
+  reconhecimentoVoz.lang = "pt-BR"
+
+  // Me avise quando ele terminou de trasncrever a voz
+  reconhecimentoVoz.onresult = (evento) => {
+    let textoTranscricao = evento.results[0][0].transcript
+
+    inputTexto.textContent = textoTranscricao
+
+    traduzir()
+
+  }
+
+  reconhecimentoVoz.start()
 }
 // clicou no botao -> chama a funcao -> monto o enderco ->
-// chamo o servidor -> peco esperar -> responde 
+// chamo o servidor -> peco esperar -> responde
